@@ -1,0 +1,12 @@
+version: "3"
+
+services:
+  batch:
+    image: node:17
+    container_name: batch
+    tty: true
+    working_dir: /usr/src/batch
+    volumes:
+      - ../batch:/usr/src/batch
+
+
