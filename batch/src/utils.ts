@@ -10,4 +10,3 @@ export async function sleep(millis?: number) {
   await new Promise(s => setTimeout(s, millis || EDINET_API_FETCH_INTERVAL_MS))
 }
 
-
