@@ -1,17 +1,11 @@
+import * as dotenv from 'dotenv'
+dotenv.config()
+
 import moment, {Moment} from 'moment'
-import 'moment-timezone'
 import { fetchDocumentList } from './edinet.js'
 import {doesEdinetRawDocumentListExist, uploadEdinetRawDocumentList} from './s3.js'
-const EDINET_API_FETCH_INTERVAL_MS = parseInt(process.env.EDINET_API_FETCH_INTERVAL_MS || '1000', 10)
 import { parse } from 'ts-command-line-args'
-
-function today(timezone: string): Moment {
-  return moment().tz(timezone).startOf('day')
-}
-
-async function sleep(millis: number) {
-  await new Promise(s => setTimeout(s, millis))
-}
+import {sleep, today} from './utils.js'
 
 async function syncEdinetDocumentListOfDate(targetDate: Moment, refresh?: boolean) {
   const _targetDate = targetDate.clone().startOf('day')
@@ -37,7 +31,7 @@ async function syncEdinetDocumentLists(startDate?: Moment, endDate?: Moment, ref
   let targetDate = _startDate.clone()
   while(targetDate.isSameOrBefore(_endDate, 'day')) {
     await syncEdinetDocumentListOfDate(targetDate.clone(), refresh)
-    await sleep(EDINET_API_FETCH_INTERVAL_MS)
+    await sleep()
     targetDate = targetDate.add(1, 'day')
   }
 }
