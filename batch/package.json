@@ -5,8 +5,12 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "fetch": "node fetch.js"
+    "fetch": "node fetch.mjs"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "aws-sdk": "^2.1048.0",
+    "dotenv": "^10.0.0"
+  }
 }
