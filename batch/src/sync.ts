@@ -1,7 +1,8 @@
 import moment, {Moment} from 'moment'
-import { fetchDocumentList } from './src/edinet.js'
-import {doesEdinetRawDocumentListExist, uploadEdinetRawDocumentList} from './src/s3.js'
+import { fetchDocumentList } from './edinet.js'
+import {doesEdinetRawDocumentListExist, uploadEdinetRawDocumentList} from './s3.js'
 const EDINET_API_FETCH_INTERVAL_MS = parseInt(process.env.EDINET_API_FETCH_INTERVAL_MS || '1000', 10)
+import { parse } from 'ts-command-line-args'
 
 async function sleep(millis: number) {
   await new Promise(s => setTimeout(s, millis))
@@ -17,8 +18,12 @@ async function syncEdinetDocumentListOfDate(targetDate: Moment, refresh?: boolea
   const { data } = await fetchDocumentList(_targetDate)
   const { status, message } = data.metadata
   console.log(`Fetched document list of ${targetDateString} (${status}, ${message}).`)
-  await uploadEdinetRawDocumentList(_targetDate, data)
-  console.log(`Uploaded document list of ${targetDateString} to S3.`)
+  if (status == 200) {
+    await uploadEdinetRawDocumentList(_targetDate, data)
+    console.log(`Uploaded document list of ${targetDateString} to S3.`)
+  } else {
+    console.log(`Skipped uploading document list of ${targetDateString}.`)
+  }
 }
 
 async function syncEdinetDocumentLists(startDate?: Moment, endDate?: Moment, refresh?: boolean) {
@@ -32,6 +37,25 @@ async function syncEdinetDocumentLists(startDate?: Moment, endDate?: Moment, ref
   }
 }
 
+interface ICommandLineArgs {
+  from?: string;
+  to?: string;
+  refresh: boolean;
+}
 
-syncEdinetDocumentLists()
+const args = parse<ICommandLineArgs>({
+  from   : { type: String, optional: true },
+  to     : { type: String, optional: true },
+  refresh: { type: Boolean, alias: 'r' }
+})
+
+function parseDate(str?: string): Moment | undefined {
+  return str ? moment(str, 'YYYY-MM-DD') : undefined
+}
+
+const startDate = parseDate(args.from)
+const endDate = parseDate(args.to)
+const refresh = args.refresh
+
+syncEdinetDocumentLists(startDate, endDate, refresh)
 

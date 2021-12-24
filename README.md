@@ -13,18 +13,29 @@ cp .env.template .env
 vim .env
 ```
 
-## Fetch from EDINET
+## Sync with EDINET
 
-This takes several hours.
+### Full sync (up to 5 years ago)
+
+This can take about an hour.
 
 ```
 cd docker
 docker-compose run batch npm run fetch
 ```
 
+### Partial sync
+
+```
+cd docker
+docker-compose run batch npm run fetch -- --from=2021-12-24
+docker-compose run batch npm run fetch -- --from=2021-12-23 --to=2021-12-25
+```
+
+
 # Troubleshooting
 
-## EAI_AGAIN
+## Network error (EAI_AGAIN)
 
 Try adding the following to `/etc/docker/daemon.json` and then restart docker.
 
