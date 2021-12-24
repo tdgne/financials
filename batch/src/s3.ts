@@ -5,18 +5,14 @@ import {Moment} from 'moment'
 const s3 = new AWS.S3()
 
 const BUCKET_NAME = process.env.BUCKET_NAME as string
-const EDINET_RAW_KEY_PREFIX = process.env.EDINET_RAW_KEY_PREFIX || 'edinet/raw/'
+const EDINET_RAW_DOCUMENT_LIST_PREFIX = process.env.EDINET_RAW_DOCUMENT_LIST_PREFIX || 'edinet/raw/document-list/'
 
-function documentListSuffix(date: Moment) {
+function documentListKey(date: Moment) {
   if (date.hours() == 0 && date.minutes() == 0 && date.seconds() == 0) {
-    return `${date.format('YYYY/MM/DD')}/documents.json`
+    return `${EDINET_RAW_DOCUMENT_LIST_PREFIX}${date.format('YYYY/MM/DD')}/documents.json`
   } else {
     throw new Error('Only start of a day is allowed')
   }
-}
-
-function fetchObjectList(Prefix?: string, StartAfter?: string) {
-  return s3.listObjectsV2({ Bucket: BUCKET_NAME, Prefix, StartAfter }).promise()
 }
 
 async function doesObjectExist(Key: string) {
@@ -31,29 +27,15 @@ async function doesObjectExist(Key: string) {
   return true
 }
 
-export function fetchEdinetRawObjectList(StartAfter?: string) {
-  return fetchObjectList(EDINET_RAW_KEY_PREFIX, StartAfter)
-}
-
-
-function doesEdinetRawObjectExist(suffix: string) {
-  return doesObjectExist(`${EDINET_RAW_KEY_PREFIX}${suffix}`)
-}
-
-
-function uploadToEdinetBucket(Key: string, Body: string) {
+function upload(Key: string, Body: string) {
   return s3.upload({ Bucket: BUCKET_NAME, Key, Body }).promise()
 }
 
-function uploadEdinetRawObject(suffix: string, body: string) {
-  return uploadToEdinetBucket(`${EDINET_RAW_KEY_PREFIX}${suffix}`, body)
-}
-
 export function doesEdinetRawDocumentListExist(date: Moment) {
-  return doesEdinetRawObjectExist(documentListSuffix(date))
+  return doesObjectExist(documentListKey(date))
 }
 
 export function uploadEdinetRawDocumentList(date: Moment, json: Object) {
-  return uploadEdinetRawObject(documentListSuffix(date), JSON.stringify(json))
+  return upload(documentListKey(date), JSON.stringify(json))
 }
 
