@@ -9,10 +9,14 @@
 
 ```
 cd batch
+cp .env.template .env
 vim .env
 ```
 
 ## Fetch from EDINET
+
+This takes several hours.
+
 ```
 cd docker
 docker-compose run batch npm run fetch
