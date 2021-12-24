@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "sync": "node --loader ts-node/esm src/sync.ts"
+    "sync-document-lists": "node --loader ts-node/esm src/sync-document-lists.ts"
   },
   "author": "",
   "license": "ISC",
