@@ -2,10 +2,12 @@
 
  - Docker
  - docker-compose
+ - AWS CLI
 
 # Usage
 
-## Set AWS credentials & bucket name 
+## Set S3 bucket name 
+Create an S3 bucket and set BUCKET_NAME to it's name.
 
 ```
 cd batch
@@ -21,17 +23,30 @@ This can take about an hour.
 
 ```
 cd docker
-docker-compose run batch npm run fetch
+
+docker-compose run --rm \
+  -e AWS_ACCESS_KEY_ID=$(aws configure get aws_access_key_id) \
+  -e AWS_SECRET_ACCESS_KEY=$(aws configure get aws_secret_access_key) \
+  batch npm run sync
 ```
 
 ### Partial sync
 
 ```
 cd docker
-docker-compose run batch npm run fetch -- --from=2021-12-24
-docker-compose run batch npm run fetch -- --from=2021-12-23 --to=2021-12-25
-```
 
+# from 2021-12-24 to today
+docker-compose run --rm \
+  -e AWS_ACCESS_KEY_ID=$(aws configure get aws_access_key_id) \
+  -e AWS_SECRET_ACCESS_KEY=$(aws configure get aws_secret_access_key) \
+  batch npm run sync -- --from=2021-12-24
+
+# from 2021-12-24 to 2021-12-25
+docker-compose run --rm \
+  -e AWS_ACCESS_KEY_ID=$(aws configure get aws_access_key_id) \
+  -e AWS_SECRET_ACCESS_KEY=$(aws configure get aws_secret_access_key) \
+  batch npm run sync -- --from=2021-12-23 --to=2021-12-25
+```
 
 # Troubleshooting
 
