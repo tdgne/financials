@@ -1,9 +1,9 @@
 import 'reflect-metadata'
 import { container } from 'tsyringe'
-import { SyncService } from './sync'
+import { SyncService } from './service/sync'
 import { MockEdinetClient } from './client/edinet/mock'
 import { MockS3Client } from './client/s3/mock'
-import { MockSleep, parseDate } from './utils'
+import { MockSleep, parseDate } from './service/utils'
 import 'jest'
 
 container.register('EdinetClient', {

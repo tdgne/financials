@@ -5,10 +5,10 @@ import * as dotenv from 'dotenv'
 dotenv.config()
 
 import { parse } from 'ts-command-line-args'
-import { SyncService } from './sync'
+import { SyncService } from './service/sync'
 import { EdinetClient } from './client/edinet/impl'
 import { S3Client } from './client/s3/impl'
-import { parseDate, Sleep } from './utils'
+import { parseDate, Sleep } from './service/utils'
 
 interface ICommandLineArgs {
   from?: string;
