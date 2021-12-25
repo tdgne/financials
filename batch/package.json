@@ -6,7 +6,10 @@
   "type": "module",
   "scripts": {
     "test": "NODE_OPTIONS='--experimental-vm-modules --es-module-specifier-resolution=node' npx jest",
-    "sync-document-lists": "node --experimental-vm-modules --es-module-specifier-resolution=node --loader ts-node/esm src/sync-document-lists.ts"
+    "lint": "npx tslint --project .",
+    "lint-fix": "npx tslint --project . --fix",
+    "sync-document-lists": "node --experimental-vm-modules --es-module-specifier-resolution=node --loader ts-node/esm src/sync-document-lists.ts",
+    "prepare": "husky install"
   },
   "author": "",
   "license": "ISC",

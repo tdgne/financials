@@ -7,7 +7,7 @@ import { documentListKey, IS3Client } from './interface'
 
 @injectable()
 export class MockS3Client implements IS3Client {
-  
+
   public storage: any = {}
 
   constructor() {
@@ -18,7 +18,7 @@ export class MockS3Client implements IS3Client {
     return documentListKey(date) in this.storage
   }
 
-  async uploadEdinetRawDocumentList(date: Moment, json: Object) {
+  async uploadEdinetRawDocumentList(date: Moment, json: object) {
     this.storage[documentListKey(date)] = JSON.stringify(json)
   }
 }

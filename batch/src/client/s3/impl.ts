@@ -35,7 +35,7 @@ export class S3Client implements IS3Client {
     return doesObjectExist(documentListKey(date))
   }
 
-  async uploadEdinetRawDocumentList(date: Moment, json: Object) {
+  async uploadEdinetRawDocumentList(date: Moment, json: object) {
     await upload(documentListKey(date), JSON.stringify(json))
   }
 }

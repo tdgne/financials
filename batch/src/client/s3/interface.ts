@@ -15,6 +15,6 @@ export function documentListKey(date: Moment) {
 
 export interface IS3Client {
   doesEdinetRawDocumentListExist(date: Moment): Promise<boolean>
-  uploadEdinetRawDocumentList(date: Moment, json: Object): Promise<void>
+  uploadEdinetRawDocumentList(date: Moment, json: object): Promise<void>
 }
 
