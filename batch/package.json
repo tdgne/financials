@@ -5,8 +5,8 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "sync-document-lists": "node --loader ts-node/esm src/sync-document-lists.ts"
+    "test": "NODE_OPTIONS='--experimental-vm-modules --es-module-specifier-resolution=node' npx jest",
+    "sync-document-lists": "node --experimental-vm-modules --es-module-specifier-resolution=node --loader ts-node/esm src/sync-document-lists.ts"
   },
   "author": "",
   "license": "ISC",

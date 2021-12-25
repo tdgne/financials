@@ -3,9 +3,9 @@ dotenv.config()
 
 import { Moment } from 'moment'
 import { inject, injectable } from 'tsyringe'
-import { IEdinetRepository } from './edinet.js'
-import { IS3Repository } from './s3.js'
-import { sleep, today } from './utils.js'
+import { IEdinetRepository } from './edinet'
+import { IS3Repository } from './s3'
+import { ISleep, today } from './utils'
 
 export interface ISyncService {
   syncEdinetDocumentListOfDate(targetDate: Moment, refresh?: boolean): void
@@ -17,6 +17,7 @@ export class SyncService implements ISyncService {
   constructor(
     @inject('EdinetRepository') private edinetRepository: IEdinetRepository,
     @inject('S3Repository') private s3Repository: IS3Repository,
+    @inject('Sleep') private sleep: ISleep,
   ) {}
 
   async syncEdinetDocumentListOfDate(targetDate: Moment, refresh?: boolean) {
@@ -43,7 +44,7 @@ export class SyncService implements ISyncService {
     let targetDate = _startDate.clone()
     while(targetDate.isSameOrBefore(_endDate, 'day')) {
       await this.syncEdinetDocumentListOfDate(targetDate.clone(), refresh)
-      await sleep()
+      await this.sleep.sleep()
       targetDate = targetDate.add(1, 'day')
     }
   }

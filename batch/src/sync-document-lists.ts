@@ -4,11 +4,11 @@ import { container } from 'tsyringe'
 import * as dotenv from 'dotenv'
 dotenv.config()
 
-import moment, { Moment } from 'moment'
 import { parse } from 'ts-command-line-args'
-import { SyncService } from './sync.js'
-import { EdinetRepository } from './edinet.js'
-import { S3Repository } from './s3.js'
+import { SyncService } from './sync'
+import { EdinetRepository } from './edinet'
+import { S3Repository } from './s3'
+import { parseDate, Sleep } from './utils'
 
 interface ICommandLineArgs {
   from?: string;
@@ -22,10 +22,6 @@ const args = parse<ICommandLineArgs>({
   refresh: { type: Boolean, alias: 'r' }
 })
 
-function parseDate(str?: string): Moment | undefined {
-  return str ? moment.tz(str, 'Asia/Tokyo') : undefined
-}
-
 const startDate = parseDate(args.from)
 const endDate = parseDate(args.to)
 const refresh = args.refresh
@@ -33,8 +29,13 @@ const refresh = args.refresh
 container.register('EdinetRepository', {
   useClass: EdinetRepository
 })
+
 container.register('S3Repository', {
   useClass: S3Repository
+})
+
+container.register('Sleep', {
+  useClass: Sleep
 })
 
 const syncService = container.resolve(SyncService)
