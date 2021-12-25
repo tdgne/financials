@@ -48,7 +48,7 @@ make fetch-document-lists-all
 make fetch-document-lists FROM=2021-12-24
 ```
 
-<detail>
+<details>
   <summary>`docker-compose` examples</summary>
 
   ```bash
@@ -65,7 +65,7 @@ make fetch-document-lists FROM=2021-12-24
     batch npm run sync-document-lists -- --from=2021-12-23 --to=2021-12-25
   ```
 
-</detail>
+</details>
 
 # Troubleshooting
 
