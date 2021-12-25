@@ -19,6 +19,6 @@ export class MockS3Client implements IS3Client {
   }
 
   async uploadEdinetRawDocumentList(date: Moment, json: Object) {
-    this.storage[documentListKey(date)] = json
+    this.storage[documentListKey(date)] = JSON.stringify(json)
   }
 }

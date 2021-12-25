@@ -43,6 +43,23 @@ describe('syncEdinetDocumentListOfDate', () => {
     const s3Client = syncService.s3Client as MockS3Client
     expect(Object.keys(s3Client.storage).length).toBe(0)
   })
+
+  it('overwrites existing object when refresh mode is true', async () => {
+    const syncService = container.resolve(SyncService)
+    const dateString = '2021-12-25'
+    const date = parseDate(dateString) ?? fail('parseDate returned undefined')
+    const refresh = true
+    await syncService.syncEdinetDocumentListOfDate(date, refresh)
+    const s3Client = syncService.s3Client as MockS3Client
+    expect(Object.keys(s3Client.storage).length).toBe(1)
+    expect('edinet/raw/document-list/2021/12/25/documents.json' in s3Client.storage).toBeTruthy()
+    expect(s3Client.storage['edinet/raw/document-list/2021/12/25/documents.json'].indexOf('OLD_MARKER')).toBeLessThan(0)
+    s3Client.storage['edinet/raw/document-list/2021/12/25/documents.json'] += 'OLD_MARKER'
+    expect(s3Client.storage['edinet/raw/document-list/2021/12/25/documents.json'].indexOf('OLD_MARKER')).toBeGreaterThan(0)
+    await syncService.syncEdinetDocumentListOfDate(date, refresh)
+    expect(Object.keys(s3Client.storage).length).toBe(1)
+    expect(s3Client.storage['edinet/raw/document-list/2021/12/25/documents.json'].indexOf('OLD_MARKER')).toBeLessThan(0)
+  })
 })
 
 describe('syncEdinetDocumentLists', () => {
