@@ -4,14 +4,14 @@ import { injectable } from 'tsyringe'
 
 const DOCUMENT_LIST_ENDPOINT = 'https://disclosure.edinet-fsa.go.jp/api/v1/documents.json'
 
-export interface IEdinetRepository {
+export interface IEdinetClient {
   fetchDocumentList(date: Moment): Promise<any>
 }
 
 @injectable()
-export class EdinetRepository implements IEdinetRepository {
+export class EdinetClient implements IEdinetClient {
   constructor() {
-    console.log('Constructed real EdinetRepository')
+    console.log('Constructed real EdinetClient')
   }
 
   fetchDocumentList(date: Moment) {
@@ -25,9 +25,9 @@ export class EdinetRepository implements IEdinetRepository {
 }
 
 @injectable()
-export class MockEdinetRepository implements IEdinetRepository {
+export class MockEdinetClient implements IEdinetClient {
   constructor() {
-    console.log('Constructed mock EdinetRepository')
+    console.log('Constructed mock EdinetClient')
   }
 
   async fetchDocumentList(_date: Moment) {

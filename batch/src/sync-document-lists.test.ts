@@ -5,20 +5,20 @@ import * as dotenv from 'dotenv'
 dotenv.config()
 
 import { SyncService } from './sync'
-import { MockEdinetRepository } from './edinet'
-import { MockS3Repository } from './s3'
+import { MockEdinetClient } from './edinet'
+import { MockS3Client } from './s3'
 import { MockSleep, parseDate } from './utils'
 
 const startDate = parseDate('2021-12-23')
 const endDate = parseDate('2021-12-25')
 const refresh = false
 
-container.register('EdinetRepository', {
-  useClass: MockEdinetRepository
+container.register('EdinetClient', {
+  useClass: MockEdinetClient
 })
 
-container.register('S3Repository', {
-  useClass: MockS3Repository
+container.register('S3Client', {
+  useClass: MockS3Client
 })
 
 container.register('Sleep', {

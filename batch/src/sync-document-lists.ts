@@ -6,8 +6,8 @@ dotenv.config()
 
 import { parse } from 'ts-command-line-args'
 import { SyncService } from './sync'
-import { EdinetRepository } from './edinet'
-import { S3Repository } from './s3'
+import { EdinetClient } from './edinet'
+import { S3Client } from './s3'
 import { parseDate, Sleep } from './utils'
 
 interface ICommandLineArgs {
@@ -26,12 +26,12 @@ const startDate = parseDate(args.from)
 const endDate = parseDate(args.to)
 const refresh = args.refresh
 
-container.register('EdinetRepository', {
-  useClass: EdinetRepository
+container.register('EdinetClient', {
+  useClass: EdinetClient
 })
 
-container.register('S3Repository', {
-  useClass: S3Repository
+container.register('S3Client', {
+  useClass: S3Client
 })
 
 container.register('Sleep', {

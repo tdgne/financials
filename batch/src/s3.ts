@@ -33,15 +33,15 @@ function upload(Key: string, Body: string) {
   return s3.upload({ Bucket: BUCKET_NAME, Key, Body }).promise()
 }
 
-export interface IS3Repository {
+export interface IS3Client {
   doesEdinetRawDocumentListExist(date: Moment): Promise<boolean>
   uploadEdinetRawDocumentList(date: Moment, json: Object): Promise<void>
 }
 
 @injectable()
-export class S3Repository implements IS3Repository {
+export class S3Client implements IS3Client {
   constructor() {
-    console.log('Constructed real S3Repository')
+    console.log('Constructed real S3Client')
   }
 
   doesEdinetRawDocumentListExist(date: Moment) {
@@ -54,9 +54,9 @@ export class S3Repository implements IS3Repository {
 }
 
 @injectable()
-export class MockS3Repository implements IS3Repository {
+export class MockS3Client implements IS3Client {
   constructor() {
-    console.log('Constructed mock S3Repository')
+    console.log('Constructed mock S3Client')
   }
 
   async doesEdinetRawDocumentListExist(_date: Moment) {

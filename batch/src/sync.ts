@@ -3,8 +3,8 @@ dotenv.config()
 
 import { Moment } from 'moment'
 import { inject, injectable } from 'tsyringe'
-import { IEdinetRepository } from './edinet'
-import { IS3Repository } from './s3'
+import { IEdinetClient } from './edinet'
+import { IS3Client } from './s3'
 import { ISleep, today } from './utils'
 
 export interface ISyncService {
@@ -15,23 +15,23 @@ export interface ISyncService {
 @injectable()
 export class SyncService implements ISyncService {
   constructor(
-    @inject('EdinetRepository') private edinetRepository: IEdinetRepository,
-    @inject('S3Repository') private s3Repository: IS3Repository,
+    @inject('EdinetClient') private edinetClient: IEdinetClient,
+    @inject('S3Client') private s3Client: IS3Client,
     @inject('Sleep') private sleep: ISleep,
   ) {}
 
   async syncEdinetDocumentListOfDate(targetDate: Moment, refresh?: boolean) {
     const _targetDate = targetDate.clone().startOf('day')
     const targetDateString = _targetDate.format('YYYY-MM-DD')
-    if (!refresh && await this.s3Repository.doesEdinetRawDocumentListExist(_targetDate)) {
+    if (!refresh && await this.s3Client.doesEdinetRawDocumentListExist(_targetDate)) {
       console.log(`Document list of ${targetDateString} exists.`)
       return
     }
-    const { data } = await this.edinetRepository.fetchDocumentList(_targetDate)
+    const { data } = await this.edinetClient.fetchDocumentList(_targetDate)
     const { status, message } = data.metadata
     console.log(`Fetched document list of ${targetDateString} (${status}, ${message}).`)
     if (status == 200) {
-      await this.s3Repository.uploadEdinetRawDocumentList(_targetDate, data)
+      await this.s3Client.uploadEdinetRawDocumentList(_targetDate, data)
       console.log(`Uploaded document list of ${targetDateString} to S3.`)
     } else {
       console.log(`Skipped uploading document list of ${targetDateString}.`)
