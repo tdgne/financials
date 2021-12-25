@@ -49,7 +49,9 @@ make fetch-document-lists FROM=2021-12-24
 ```
 
 <details>
-  <summary>`docker-compose` examples</summary>
+  <summary>
+    `docker-compose` examples
+  </summary>
 
   ```bash
   # from 2021-12-24 to today
