@@ -50,6 +50,7 @@ make fetch-document-lists FROM=2021-12-24
 
 <detail>
   <summary>`docker-compose` examples</summary>
+
   ```bash
   # from 2021-12-24 to today
   docker-compose run --rm \
@@ -63,6 +64,7 @@ make fetch-document-lists FROM=2021-12-24
     -e AWS_SECRET_ACCESS_KEY=$(aws configure get aws_secret_access_key) \
     batch npm run sync-document-lists -- --from=2021-12-23 --to=2021-12-25
   ```
+
 </detail>
 
 # Troubleshooting
