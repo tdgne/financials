@@ -1,11 +1,20 @@
 import axios from 'axios'
-import { Moment } from 'moment'
+import moment, { Moment } from 'moment'
 import { injectable } from 'tsyringe'
 
 const DOCUMENT_LIST_ENDPOINT = 'https://disclosure.edinet-fsa.go.jp/api/v1/documents.json'
 
+export interface HasMetadata {
+  data: {
+    metadata: {
+      status: number,
+      message: string
+    }
+  }
+}
+
 export interface IEdinetClient {
-  fetchDocumentList(date: Moment): Promise<any>
+  fetchDocumentList(date: Moment): Promise<HasMetadata>
 }
 
 @injectable()
@@ -30,11 +39,23 @@ export class MockEdinetClient implements IEdinetClient {
     console.log('Constructed mock EdinetClient')
   }
 
-  async fetchDocumentList(_date: Moment) {
+  async fetchDocumentList(date: Moment) {
+    if (date.isSameOrBefore(moment('2021-12-25').tz('Asia/Tokyo'))) {
+      return {
+        data: {
+          metadata: {
+            status: 200,
+            message: 'OK'
+          }
+        }
+      }
+    }
     return {
-      metadata: {
-        status: 200,
-        message: 'OK'
+      data: {
+        metadata: {
+          status: 404,
+          message: 'NotFound'
+        }
       }
     }
   }

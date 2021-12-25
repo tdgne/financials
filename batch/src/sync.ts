@@ -15,9 +15,9 @@ export interface ISyncService {
 @injectable()
 export class SyncService implements ISyncService {
   constructor(
-    @inject('EdinetClient') private edinetClient: IEdinetClient,
-    @inject('S3Client') private s3Client: IS3Client,
-    @inject('Sleep') private sleep: ISleep,
+    @inject('EdinetClient') public edinetClient: IEdinetClient,
+    @inject('S3Client') public s3Client: IS3Client,
+    @inject('Sleep') public sleep: ISleep,
   ) {}
 
   async syncEdinetDocumentListOfDate(targetDate: Moment, refresh?: boolean) {

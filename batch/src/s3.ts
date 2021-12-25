@@ -55,14 +55,18 @@ export class S3Client implements IS3Client {
 
 @injectable()
 export class MockS3Client implements IS3Client {
+  
+  public storage: any = {}
+
   constructor() {
     console.log('Constructed mock S3Client')
   }
 
-  async doesEdinetRawDocumentListExist(_date: Moment) {
-    return true
+  async doesEdinetRawDocumentListExist(date: Moment) {
+    return documentListKey(date) in this.storage
   }
 
-  async uploadEdinetRawDocumentList(_date: Moment, _json: Object) {
+  async uploadEdinetRawDocumentList(date: Moment, json: Object) {
+    this.storage[documentListKey(date)] = json
   }
 }
