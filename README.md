@@ -7,9 +7,9 @@
 # Usage
 
 ## Set S3 bucket name 
-Create an S3 bucket and set BUCKET_NAME to it's name.
+Create an S3 bucket and set `BUCKET_NAME` to it's name.
 
-```
+```bash
 cd batch
 cp .env.template .env
 vim .env
@@ -21,7 +21,7 @@ vim .env
 
 This can take about an hour.
 
-```
+```bash
 cd docker
 
 docker-compose run --rm \
@@ -32,7 +32,7 @@ docker-compose run --rm \
 
 ### Partial sync
 
-```
+```bash
 cd docker
 
 # from 2021-12-24 to today
@@ -50,17 +50,17 @@ docker-compose run --rm \
 
 # Troubleshooting
 
-## Network error (EAI_AGAIN)
+## Network error (`EAI_AGAIN`)
 
 Try adding the following to `/etc/docker/daemon.json` and then restart docker.
 
-```
+```json
 {
   dns: ["8.8.8.8"]
 }
 ```
 
-```
+```bash
 sudo systemctl restart docker
 ```
 
