@@ -6,8 +6,8 @@ dotenv.config()
 
 import { parse } from 'ts-command-line-args'
 import { SyncService } from './sync'
-import { EdinetClient } from './edinet'
-import { S3Client } from './s3'
+import { EdinetClient } from './client/edinet/impl'
+import { S3Client } from './client/s3/impl'
 import { parseDate, Sleep } from './utils'
 
 interface ICommandLineArgs {

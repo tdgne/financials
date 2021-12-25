@@ -4,18 +4,10 @@ dotenv.config()
 import AWS from 'aws-sdk'
 import { Moment } from 'moment'
 import { injectable } from 'tsyringe'
+import { documentListKey, IS3Client } from './interface'
 const s3 = new AWS.S3()
 
 const BUCKET_NAME = process.env.BUCKET_NAME as string
-const EDINET_RAW_DOCUMENT_LIST_PREFIX = process.env.EDINET_RAW_DOCUMENT_LIST_PREFIX || 'edinet/raw/document-list/'
-
-function documentListKey(date: Moment) {
-  if (date.hours() == 0 && date.minutes() == 0 && date.seconds() == 0) {
-    return `${EDINET_RAW_DOCUMENT_LIST_PREFIX}${date.format('YYYY/MM/DD')}/documents.json`
-  } else {
-    throw new Error('Only start of a day is allowed')
-  }
-}
 
 async function doesObjectExist(Key: string): Promise<boolean> {
   try {
@@ -33,11 +25,6 @@ function upload(Key: string, Body: string) {
   return s3.upload({ Bucket: BUCKET_NAME, Key, Body }).promise()
 }
 
-export interface IS3Client {
-  doesEdinetRawDocumentListExist(date: Moment): Promise<boolean>
-  uploadEdinetRawDocumentList(date: Moment, json: Object): Promise<void>
-}
-
 @injectable()
 export class S3Client implements IS3Client {
   constructor() {
@@ -53,20 +40,3 @@ export class S3Client implements IS3Client {
   }
 }
 
-@injectable()
-export class MockS3Client implements IS3Client {
-  
-  public storage: any = {}
-
-  constructor() {
-    console.log('Constructed mock S3Client')
-  }
-
-  async doesEdinetRawDocumentListExist(date: Moment) {
-    return documentListKey(date) in this.storage
-  }
-
-  async uploadEdinetRawDocumentList(date: Moment, json: Object) {
-    this.storage[documentListKey(date)] = json
-  }
-}

@@ -1,8 +1,8 @@
 import 'reflect-metadata'
 import { container } from 'tsyringe'
 import { SyncService } from './sync'
-import { MockEdinetClient } from './edinet'
-import { MockS3Client } from './s3'
+import { MockEdinetClient } from './client/edinet/mock'
+import { MockS3Client } from './client/s3/mock'
 import { MockSleep, parseDate } from './utils'
 import 'jest'
 

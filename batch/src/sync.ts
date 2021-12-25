@@ -3,8 +3,8 @@ dotenv.config()
 
 import { Moment } from 'moment'
 import { inject, injectable } from 'tsyringe'
-import { IEdinetClient } from './edinet'
-import { IS3Client } from './s3'
+import { IEdinetClient } from './client/edinet/interface'
+import { IS3Client } from './client/s3/interface'
 import { ISleep, today } from './utils'
 
 export interface ISyncService {
