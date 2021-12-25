@@ -50,7 +50,7 @@ make fetch-document-lists FROM=2021-12-24
 
 <details>
   <summary>
-    `docker-compose` examples
+    docker-compose examples
   </summary>
 
   ```bash
