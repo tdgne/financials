@@ -56,7 +56,7 @@ Try adding the following to `/etc/docker/daemon.json` and then restart docker.
 
 ```json
 {
-  dns: ["8.8.8.8"]
+  "dns": ["8.8.8.8"]
 }
 ```
 
