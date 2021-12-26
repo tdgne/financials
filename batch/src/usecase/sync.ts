@@ -6,7 +6,7 @@ import { inject, injectable } from 'tsyringe'
 import { IEdinetClient } from '../client/edinet/interface'
 import { IS3Client } from '../client/s3/interface'
 import { EdinetDocumentListResponse } from '../model/document-list'
-import { ISleep, today } from './utils'
+import { ISleep, today } from '../utils'
 
 export interface ISyncService {
   syncEdinetDocumentListOfDate(targetDate: Moment, refresh?: boolean): void
