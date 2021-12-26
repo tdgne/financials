@@ -7,4 +7,7 @@ services:
     working_dir: /usr/src/batch
     volumes:
       - ../batch:/usr/src/batch
+      - dummy:/usr/src/batch/node_modules
 
+volumes:
+  dummy:
