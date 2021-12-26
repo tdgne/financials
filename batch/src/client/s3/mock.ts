@@ -13,11 +13,11 @@ export class MockS3Client implements IS3Client {
     console.log('Constructed mock S3Client')
   }
 
-  async doesEdinetRawDocumentListExist(date: Moment) {
+  async doesEdinetDocumentListResponseExist(date: Moment) {
     return documentListKey(date) in this.storage
   }
 
-  async uploadEdinetRawDocumentList(date: Moment, json: object) {
+  async uploadEdinetDocumentListResponse(date: Moment, json: object) {
     this.storage[documentListKey(date)] = JSON.stringify(json)
   }
 }

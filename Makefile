@@ -12,6 +12,6 @@ sync-document-lists:
 	cd docker && \
 	$(RUN_IN_BATCH_CONTAINER) "\
 		npm i && \
-		npm run sync-document-lists -- --from=$(FROM) --to=$(TO) \
+		npm run sync-document-lists -- --from=$(FROM) --to=$(TO) -r \
 	" 2>&1 | tee $(CURDIR)/sync-document-lists-$(DATETIME).log
 

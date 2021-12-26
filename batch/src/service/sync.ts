@@ -5,6 +5,7 @@ import { Moment } from 'moment'
 import { inject, injectable } from 'tsyringe'
 import { IEdinetClient } from '../client/edinet/interface'
 import { IS3Client } from '../client/s3/interface'
+import { EdinetDocumentListResponse } from '../model/document-list'
 import { ISleep, today } from './utils'
 
 export interface ISyncService {
@@ -29,18 +30,22 @@ export class SyncService implements ISyncService {
     const targetDateString = _targetDate.format('YYYY-MM-DD')
     if (
       !refresh &&
-      (await this.s3Client.doesEdinetRawDocumentListExist(_targetDate))
+      (await this.s3Client.doesEdinetDocumentListResponseExist(_targetDate))
     ) {
       console.log(`Document list of ${targetDateString} exists.`)
       return
     }
-    const { data } = await this.edinetClient.fetchDocumentList(_targetDate)
-    const { status, message } = data.metadata
+    const documentList: EdinetDocumentListResponse =
+      await this.edinetClient.fetchDocumentList(_targetDate)
+    const { status, message } = documentList.metadata
     console.log(
       `Fetched document list of ${targetDateString} (${status}, ${message}).`
     )
     if (status == 200) {
-      await this.s3Client.uploadEdinetRawDocumentList(_targetDate, data)
+      await this.s3Client.uploadEdinetDocumentListResponse(
+        _targetDate,
+        documentList
+      )
       console.log(`Uploaded document list of ${targetDateString} to S3.`)
     } else {
       console.log(`Skipped uploading document list of ${targetDateString}.`)

@@ -1,14 +1,6 @@
 import { Moment } from 'moment'
-
-export interface HasMetadata {
-  data: {
-    metadata: {
-      status: number
-      message: string
-    }
-  }
-}
+import { EdinetDocumentListResponse } from '../../model/document-list'
 
 export interface IEdinetClient {
-  fetchDocumentList(date: Moment): Promise<HasMetadata>
+  fetchDocumentList(date: Moment): Promise<EdinetDocumentListResponse>
 }

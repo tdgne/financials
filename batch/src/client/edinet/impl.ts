@@ -12,12 +12,14 @@ export class EdinetClient implements IEdinetClient {
     console.log('Constructed real EdinetClient')
   }
 
-  fetchDocumentList(date: Moment) {
-    return axios.get(DOCUMENT_LIST_ENDPOINT, {
-      params: {
-        date: date.format('YYYY-MM-DD'),
-        type: 2,
-      },
-    })
+  async fetchDocumentList(date: Moment) {
+    return (
+      await axios.get(DOCUMENT_LIST_ENDPOINT, {
+        params: {
+          date: date.format('YYYY-MM-DD'),
+          type: 2,
+        },
+      })
+    ).data
   }
 }

@@ -5,6 +5,7 @@ import AWS from 'aws-sdk'
 import { Moment } from 'moment'
 import { injectable } from 'tsyringe'
 import { documentListKey, IS3Client } from './interface'
+import { EdinetDocumentListResponse } from '../../model/document-list'
 const s3 = new AWS.S3()
 
 const BUCKET_NAME = process.env.BUCKET_NAME as string | undefined
@@ -42,11 +43,14 @@ export class S3Client implements IS3Client {
     console.log('Constructed real S3Client')
   }
 
-  doesEdinetRawDocumentListExist(date: Moment) {
+  doesEdinetDocumentListResponseExist(date: Moment) {
     return doesObjectExist(documentListKey(date))
   }
 
-  async uploadEdinetRawDocumentList(date: Moment, json: object) {
+  async uploadEdinetDocumentListResponse(
+    date: Moment,
+    json: EdinetDocumentListResponse
+  ) {
     await upload(documentListKey(date), JSON.stringify(json))
   }
 }

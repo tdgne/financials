@@ -2,6 +2,7 @@ import * as dotenv from 'dotenv'
 dotenv.config()
 
 import { Moment } from 'moment'
+import { EdinetDocumentListResponse } from '../../model/document-list'
 
 const EDINET_RAW_DOCUMENT_LIST_PREFIX =
   process.env.EDINET_RAW_DOCUMENT_LIST_PREFIX || 'edinet/raw/document-list/'
@@ -17,6 +18,9 @@ export function documentListKey(date: Moment) {
 }
 
 export interface IS3Client {
-  doesEdinetRawDocumentListExist(date: Moment): Promise<boolean>
-  uploadEdinetRawDocumentList(date: Moment, json: object): Promise<void>
+  doesEdinetDocumentListResponseExist(date: Moment): Promise<boolean>
+  uploadEdinetDocumentListResponse(
+    date: Moment,
+    json: EdinetDocumentListResponse
+  ): Promise<void>
 }
