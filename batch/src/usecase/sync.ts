@@ -101,14 +101,22 @@ export class SyncService implements ISyncService {
     const list = await this.s3Client.downloadEdinetDocumentListResponse(
       _targetDate
     )
-    if (!list.results) {
-      console.log(`0 documents for ${targetDateString} to by synced.`)
-      return
-    }
+
+    // ひとまず 有価証券報告書、訂正有価証券報告書、四半期報告書、訂正四半期報告書 に絞る
+    // see https://qiita.com/XBRLJapan/items/27e623b8ca871740f352
+    const docIDs =
+      list.results?.filter((result) => {
+        if (result.ordinanceCode != '010') {
+          return false
+        }
+        return ['030000', '030001', '043000', '043001'].includes(
+          result.formCode
+        )
+      }) ?? []
     console.log(
-      `${list.results.length} documents for ${targetDateString} to by synced.`
+      `${docIDs.length} documents for ${targetDateString} to by synced.`
     )
-    for (const result of list.results) {
+    for (const result of docIDs) {
       await this.syncEdinetDocument(result.docID, refresh)
     }
   }

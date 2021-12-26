@@ -1,3 +1,5 @@
+[EDINET](https://disclosure.edinet-fsa.go.jp/EKW0EZ0015.html) から 指定期間の有価証券報告書などを取得し指定した S3 バケットにアップロードします。
+
 # Requirements
 
  - Docker
