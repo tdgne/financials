@@ -8,15 +8,15 @@ import 'jest'
 import { Moment } from 'moment'
 
 container.register('EdinetClient', {
-  useClass: MockEdinetClient
+  useClass: MockEdinetClient,
 })
 
 container.register('S3Client', {
-  useClass: MockS3Client
+  useClass: MockS3Client,
 })
 
 container.register('Sleep', {
-  useClass: MockSleep
+  useClass: MockSleep,
 })
 
 function parseDateForTest(dateString?: string): Moment {
@@ -36,10 +36,12 @@ describe('syncEdinetDocumentListOfDate', () => {
     await syncService.syncEdinetDocumentListOfDate(date, refresh)
     const s3Client = syncService.s3Client as MockS3Client
     expect(Object.keys(s3Client.storage).length).toBe(1)
-    expect('edinet/raw/document-list/2021/12/25/documents.json' in s3Client.storage).toBeTruthy()
+    expect(
+      'edinet/raw/document-list/2021/12/25/documents.json' in s3Client.storage
+    ).toBeTruthy()
   })
 
-  it('doesn\'t put object when not found', async () => {
+  it("doesn't put object when not found", async () => {
     const syncService = container.resolve(SyncService)
     const dateString = '2021-12-26'
     const date = parseDateForTest(dateString)
@@ -84,12 +86,18 @@ describe('syncEdinetDocumentLists', () => {
     await syncService.syncEdinetDocumentLists(from, to, refresh)
     const s3Client = syncService.s3Client as MockS3Client
     expect(Object.keys(s3Client.storage).length).toBe(3)
-    expect('edinet/raw/document-list/2021/12/23/documents.json' in s3Client.storage).toBeTruthy()
-    expect('edinet/raw/document-list/2021/12/24/documents.json' in s3Client.storage).toBeTruthy()
-    expect('edinet/raw/document-list/2021/12/25/documents.json' in s3Client.storage).toBeTruthy()
+    expect(
+      'edinet/raw/document-list/2021/12/23/documents.json' in s3Client.storage
+    ).toBeTruthy()
+    expect(
+      'edinet/raw/document-list/2021/12/24/documents.json' in s3Client.storage
+    ).toBeTruthy()
+    expect(
+      'edinet/raw/document-list/2021/12/25/documents.json' in s3Client.storage
+    ).toBeTruthy()
   })
 
-  it('doesn\'t put object when not found', async () => {
+  it("doesn't put object when not found", async () => {
     const syncService = container.resolve(SyncService)
     const fromString = '2021-12-23'
     const from = parseDateForTest(fromString)
@@ -99,10 +107,14 @@ describe('syncEdinetDocumentLists', () => {
     await syncService.syncEdinetDocumentLists(from, to, refresh)
     const s3Client = syncService.s3Client as MockS3Client
     expect(Object.keys(s3Client.storage).length).toBe(3)
-    expect('edinet/raw/document-list/2021/12/23/documents.json' in s3Client.storage).toBeTruthy()
-    expect('edinet/raw/document-list/2021/12/24/documents.json' in s3Client.storage).toBeTruthy()
-    expect('edinet/raw/document-list/2021/12/25/documents.json' in s3Client.storage).toBeTruthy()
+    expect(
+      'edinet/raw/document-list/2021/12/23/documents.json' in s3Client.storage
+    ).toBeTruthy()
+    expect(
+      'edinet/raw/document-list/2021/12/24/documents.json' in s3Client.storage
+    ).toBeTruthy()
+    expect(
+      'edinet/raw/document-list/2021/12/25/documents.json' in s3Client.storage
+    ).toBeTruthy()
   })
 })
-
-

@@ -3,7 +3,7 @@ import { Moment } from 'moment'
 export interface HasMetadata {
   data: {
     metadata: {
-      status: number,
+      status: number
       message: string
     }
   }
@@ -12,4 +12,3 @@ export interface HasMetadata {
 export interface IEdinetClient {
   fetchDocumentList(date: Moment): Promise<HasMetadata>
 }
-

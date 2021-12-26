@@ -39,4 +39,3 @@ export class S3Client implements IS3Client {
     await upload(documentListKey(date), JSON.stringify(json))
   }
 }
-

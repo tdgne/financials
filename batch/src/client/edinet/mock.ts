@@ -14,18 +14,18 @@ export class MockEdinetClient implements IEdinetClient {
         data: {
           metadata: {
             status: 200,
-            message: 'OK'
-          }
-        }
+            message: 'OK',
+          },
+        },
       }
     }
     return {
       data: {
         metadata: {
           status: 404,
-          message: 'NotFound'
-        }
-      }
+          message: 'NotFound',
+        },
+      },
     }
   }
 }

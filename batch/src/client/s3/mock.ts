@@ -7,7 +7,6 @@ import { documentListKey, IS3Client } from './interface'
 
 @injectable()
 export class MockS3Client implements IS3Client {
-
   public storage: any = {}
 
   constructor() {

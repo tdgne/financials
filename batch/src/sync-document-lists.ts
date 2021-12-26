@@ -11,15 +11,15 @@ import { S3Client } from './client/s3/impl'
 import { parseDate, Sleep } from './service/utils'
 
 interface ICommandLineArgs {
-  from?: string;
-  to?: string;
-  refresh: boolean;
+  from?: string
+  to?: string
+  refresh: boolean
 }
 
 const args = parse<ICommandLineArgs>({
-  from   : { type: String, optional: true },
-  to     : { type: String, optional: true },
-  refresh: { type: Boolean, alias: 'r' }
+  from: { type: String, optional: true },
+  to: { type: String, optional: true },
+  refresh: { type: Boolean, alias: 'r' },
 })
 
 const startDate = parseDate(args.from)
@@ -27,18 +27,17 @@ const endDate = parseDate(args.to)
 const refresh = args.refresh
 
 container.register('EdinetClient', {
-  useClass: EdinetClient
+  useClass: EdinetClient,
 })
 
 container.register('S3Client', {
-  useClass: S3Client
+  useClass: S3Client,
 })
 
 container.register('Sleep', {
-  useClass: Sleep
+  useClass: Sleep,
 })
 
 const syncService = container.resolve(SyncService)
 
 syncService.syncEdinetDocumentLists(startDate, endDate, refresh)
-
