@@ -11,7 +11,7 @@
     "lint-staged": "lint-staged"
   },
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "lint-staged": {
     "*.{js,ts,jsx,tsx,json}": [
       "prettier --write",
