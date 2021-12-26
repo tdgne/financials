@@ -7,9 +7,19 @@ import { injectable } from 'tsyringe'
 import { documentListKey, IS3Client } from './interface'
 const s3 = new AWS.S3()
 
-const BUCKET_NAME = process.env.BUCKET_NAME as string
+const BUCKET_NAME = process.env.BUCKET_NAME as string | undefined
+
+function verifyEnvironmentVariableIsSet(
+  name: string,
+  value?: string
+): asserts value is NonNullable<string> {
+  if (!value) {
+    throw new Error(`Environment variable ${name} is not set.`)
+  }
+}
 
 async function doesObjectExist(Key: string): Promise<boolean> {
+  verifyEnvironmentVariableIsSet('BUCKET_NAME', BUCKET_NAME)
   try {
     await s3.headObject({ Bucket: BUCKET_NAME, Key }).promise()
   } catch (e: any) {
@@ -22,6 +32,7 @@ async function doesObjectExist(Key: string): Promise<boolean> {
 }
 
 function upload(Key: string, Body: string) {
+  verifyEnvironmentVariableIsSet('BUCKET_NAME', BUCKET_NAME)
   return s3.upload({ Bucket: BUCKET_NAME, Key, Body }).promise()
 }
 
