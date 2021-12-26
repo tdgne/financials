@@ -40,4 +40,4 @@ container.register('Sleep', {
 
 const syncService = container.resolve(SyncService)
 
-syncService.syncEdinetDocumentListsOfDateRange(startDate, endDate, refresh)
+syncService.syncEdinetDocumentsOfDateRange(startDate, endDate, refresh)

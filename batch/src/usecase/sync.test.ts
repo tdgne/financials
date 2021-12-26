@@ -83,7 +83,7 @@ describe('syncEdinetDocumentLists', () => {
     const toString = '2021-12-25'
     const to = parseDateForTest(toString)
     const refresh = false
-    await syncService.syncEdinetDocumentLists(from, to, refresh)
+    await syncService.syncEdinetDocumentListsOfDateRange(from, to, refresh)
     const s3Client = syncService.s3Client as MockS3Client
     expect(Object.keys(s3Client.storage).length).toBe(3)
     expect(
@@ -104,7 +104,7 @@ describe('syncEdinetDocumentLists', () => {
     const toString = '2021-12-27'
     const to = parseDateForTest(toString)
     const refresh = false
-    await syncService.syncEdinetDocumentLists(from, to, refresh)
+    await syncService.syncEdinetDocumentListsOfDateRange(from, to, refresh)
     const s3Client = syncService.s3Client as MockS3Client
     expect(Object.keys(s3Client.storage).length).toBe(3)
     expect(
@@ -116,5 +116,16 @@ describe('syncEdinetDocumentLists', () => {
     expect(
       'edinet/raw/document-list/2021/12/25/documents.json' in s3Client.storage
     ).toBeTruthy()
+  })
+})
+
+describe('syncEdinetDocumentsOfDate', () => {
+  beforeEach(() => {
+    container.clearInstances()
+  })
+
+  it('works', () => {
+    const syncService = container.resolve(SyncService)
+    syncService.syncEdinetDocumentsOfDate(parseDateForTest('2021-12-25'), false)
   })
 })

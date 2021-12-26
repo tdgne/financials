@@ -10,9 +10,16 @@ import { ISleep, today } from '../utils'
 
 export interface ISyncService {
   syncEdinetDocumentListOfDate(targetDate: Moment, refresh?: boolean): void
-  syncEdinetDocumentLists(
+  syncEdinetDocumentListsOfDateRange(
     startDate?: Moment,
     endDate?: Moment,
+    refresh?: boolean
+  ): void
+  syncEdinetDocument(docID: string, refresh?: boolean): void
+  syncEdinetDocumentsOfDate(targetDate: Moment, refresh?: boolean): void
+  syncEdinetDocumentsOfDateRange(
+    startDate: Moment,
+    endDate: Moment,
     refresh?: boolean
   ): void
 }
@@ -52,7 +59,7 @@ export class SyncService implements ISyncService {
     }
   }
 
-  async syncEdinetDocumentLists(
+  async syncEdinetDocumentListsOfDateRange(
     startDate?: Moment,
     endDate?: Moment,
     refresh?: boolean
@@ -65,6 +72,59 @@ export class SyncService implements ISyncService {
     while (targetDate.isSameOrBefore(_endDate, 'day')) {
       await this.syncEdinetDocumentListOfDate(targetDate.clone(), refresh)
       await this.sleep.sleep()
+      targetDate = targetDate.add(1, 'day')
+    }
+  }
+
+  async syncEdinetDocument(docID: string, refresh?: boolean) {
+    if (
+      !refresh &&
+      (await this.s3Client.doesEdinetDocumentsResponseExist(docID))
+    ) {
+      console.log(`Document of docID ${docID} exists.`)
+      return
+    }
+    try {
+      const response = await this.edinetClient.fetchDocuments(docID)
+      console.log(`Fetched document of docID ${docID}.`)
+      await this.s3Client.uploadEdinetDocumentsResponse(docID, response)
+      console.log(`Uploaded document of docID ${docID}.`)
+      await this.sleep.sleep()
+    } catch (e) {
+      console.error(e)
+    }
+  }
+
+  async syncEdinetDocumentsOfDate(targetDate: Moment, refresh?: boolean) {
+    const _targetDate = targetDate.clone().startOf('day')
+    const targetDateString = _targetDate.format('YYYY-MM-DD')
+    const list = await this.s3Client.downloadEdinetDocumentListResponse(
+      _targetDate
+    )
+    if (!list.results) {
+      console.log(`0 documents for ${targetDateString} to by synced.`)
+      return
+    }
+    console.log(
+      `${list.results.length} documents for ${targetDateString} to by synced.`
+    )
+    for (const result of list.results) {
+      await this.syncEdinetDocument(result.docID, refresh)
+    }
+  }
+
+  async syncEdinetDocumentsOfDateRange(
+    startDate?: Moment,
+    endDate?: Moment,
+    refresh?: boolean
+  ) {
+    const _startDate = (
+      startDate?.clone() || today('Asia/Tokyo').subtract(5, 'years')
+    ).startOf('day')
+    const _endDate = (endDate?.clone() || today('Asia/Tokyo')).startOf('day')
+    let targetDate = _startDate.clone()
+    while (targetDate.isSameOrBefore(_endDate, 'day')) {
+      await this.syncEdinetDocumentsOfDate(targetDate.clone(), refresh)
       targetDate = targetDate.add(1, 'day')
     }
   }

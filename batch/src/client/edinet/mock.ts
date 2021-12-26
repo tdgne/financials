@@ -1,6 +1,7 @@
 import moment, { Moment } from 'moment'
 import { injectable } from 'tsyringe'
 import { EdinetDocumentListResponse } from '../../model/document-list'
+import { EdinetDocumentsResponse } from '../../model/documents'
 import { IEdinetClient } from './interface'
 
 @injectable()
@@ -20,6 +21,12 @@ export class MockEdinetClient implements IEdinetClient {
           type: '2',
         },
       },
+    }
+  }
+
+  async fetchDocuments(_docID: string): Promise<EdinetDocumentsResponse> {
+    return {
+      file: new ArrayBuffer(100),
     }
   }
 }

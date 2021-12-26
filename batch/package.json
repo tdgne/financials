@@ -7,6 +7,7 @@
   "scripts": {
     "test": "NODE_OPTIONS='--experimental-vm-modules --es-module-specifier-resolution=node' npx jest",
     "sync-document-lists": "node --experimental-vm-modules --es-module-specifier-resolution=node --loader ts-node/esm src/sync-document-lists.ts",
+    "sync-documents": "node --experimental-vm-modules --es-module-specifier-resolution=node --loader ts-node/esm src/sync-documents.ts",
     "lint-staged": "lint-staged"
   },
   "author": "",
