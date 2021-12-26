@@ -6,7 +6,7 @@ RUN_IN_BATCH_CONTAINER = docker-compose run --rm \
 													batch /bin/bash -c
 DATETIME = $(shell date -Iseconds)
 
-.PHONY: sync-document-lists
+.PHONY: sync-document-lists sync-documents
 
 sync-document-lists:
 	cd docker && \
@@ -15,7 +15,7 @@ sync-document-lists:
 		npm run sync-document-lists -- --from=$(FROM) --to=$(TO) -r \
 	" 2>&1 | tee $(CURDIR)/sync-document-lists-$(DATETIME).log
 
-sync-documents-lists:
+sync-documents:
 	cd docker && \
 	$(RUN_IN_BATCH_CONTAINER) "\
 		npm i && \

@@ -19,11 +19,12 @@ vim batch/.env
 ### Full sync (up to 5 years ago)
 
 
-This can take about an hour.
+This can take a very long time.
 
 
 ```bash
 make sync-document-lists
+make sync-documents
 ```
 
 ### Partial sync
@@ -31,9 +32,11 @@ make sync-document-lists
 ```bash
 # from 2021-12-24 to today
 make sync-document-lists FROM=2021-12-24
+make sync-documents FROM=2021-12-24
 
 # from 2021-12-24 to 2021-12-26
 make sync-document-lists FROM=2021-12-24 TO=2021-12-26
+make sync-documents FROM=2021-12-24 TO=2021-12-26
 ```
 
 # Troubleshooting
