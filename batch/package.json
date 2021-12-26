@@ -6,14 +6,17 @@
   "type": "module",
   "scripts": {
     "test": "NODE_OPTIONS='--experimental-vm-modules --es-module-specifier-resolution=node' npx jest",
-    "prettier": "npx prettier ./src",
-    "prettier:fix": "npx prettier ./src --write",
-    "eslint": "npx eslint ./src",
-    "eslint:fix": "npx eslint ./src --fix",
-    "sync-document-lists": "node --experimental-vm-modules --es-module-specifier-resolution=node --loader ts-node/esm src/sync-document-lists.ts"
+    "sync-document-lists": "node --experimental-vm-modules --es-module-specifier-resolution=node --loader ts-node/esm src/sync-document-lists.ts",
+    "lint-staged": "lint-staged"
   },
   "author": "",
   "license": "ISC",
+  "lint-staged": {
+    "*.{js,ts,jsx,tsx,json}": [
+      "prettier --write",
+      "eslint --fix"
+    ]
+  },
   "dependencies": {
     "aws-sdk": "^2.1048.0",
     "axios": "^0.24.0",
@@ -32,8 +35,9 @@
     "@typescript-eslint/parser": "^5.8.0",
     "eslint": "^8.5.0",
     "eslint-config-prettier": "^8.3.0",
-    "eslint-plugin-prettier": "^4.0.0",
+    "husky": "^7.0.4",
     "jest": "^27.4.5",
+    "lint-staged": "^12.1.4",
     "prettier": "2.5.1",
     "ts-jest": "^27.1.2"
   }
