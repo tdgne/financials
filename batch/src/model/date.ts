@@ -11,7 +11,7 @@ export function parseYearMonthDate(str?: string): YearMonthDate | undefined {
 
 export class YearMonthDate {
   readonly year: number
-  readonly month: number
+  readonly month: number // 1-based numbering (1, 2, .., 12)
   readonly date: number
 
   constructor(year: number, month: number, date: number) {
