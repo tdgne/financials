@@ -1,5 +1,5 @@
 import 'jest'
-import moment from 'moment'
+import moment, { Moment } from 'moment'
 import 'moment-timezone'
 import { YearMonthDate } from './date'
 
@@ -12,17 +12,26 @@ describe('YearMonthDate', () => {
     expect(ymd.date).toBe(25)
   })
 
-  it('converts from Moment correctly', () => {
+  it('converts from & to Moment correctly', () => {
     const str = '2021-12-25'
-    const m = moment.tz(str, 'Asia/Tokyo')
-    const ymds: YearMonthDate = YearMonthDate.parse(str)
-    const ymdm: YearMonthDate = YearMonthDate.fromMoment(m)
-    expect(ymdm.year).toBe(2021)
-    expect(ymdm.month).toBe(12)
-    expect(ymdm.date).toBe(25)
-    expect(ymds.year).toBe(ymdm.year)
-    expect(ymds.month).toBe(ymdm.month)
-    expect(ymds.date).toBe(ymdm.date)
+    const ymd = new YearMonthDate(2021, 12, 25)
+    expect(ymd.year).toBe(2021)
+    expect(ymd.month).toBe(12)
+    expect(ymd.date).toBe(25)
+
+    function testWithMoment(expected: YearMonthDate, m: Moment) {
+      const ymdm = YearMonthDate.fromMoment(m)
+      const ymdm2 = YearMonthDate.fromMoment(ymdm.moment())
+      expect(expected.year).toBe(ymdm.year)
+      expect(expected.month).toBe(ymdm.month)
+      expect(expected.date).toBe(ymdm.date)
+      expect(expected.year).toBe(ymdm2.year)
+      expect(expected.month).toBe(ymdm2.month)
+      expect(expected.date).toBe(ymdm2.date)
+    }
+
+    testWithMoment(ymd, moment.tz(str, 'Asia/Tokyo'))
+    testWithMoment(ymd, moment(str))
   })
 
   it('isSameOrBefore is correct', () => {
