@@ -4,7 +4,7 @@ dotenv.config()
 import { inject, injectable } from 'tsyringe'
 import { IEdinetClient } from '../client/edinet/interface'
 import { IS3Client } from '../client/s3/interface'
-import { YearMonthDate } from '../model/date'
+import { TOKYO_TIMEZONE, YearMonthDate } from '../model/date'
 import { EdinetDocumentListResponse } from '../model/document-list'
 import { ISleep } from './sleep'
 
@@ -70,9 +70,9 @@ export class SyncUseCase implements ISyncUseCase {
     refresh?: boolean
   ) {
     const _startDate = (
-      startDate || YearMonthDate.today('Asia/Tokyo')
+      startDate || YearMonthDate.today(TOKYO_TIMEZONE)
     ).subtract(5, 'years')
-    const _endDate = endDate || YearMonthDate.today('Asia/Tokyo')
+    const _endDate = endDate || YearMonthDate.today(TOKYO_TIMEZONE)
     let targetDate = _startDate
     while (targetDate.isSameOrBefore(_endDate)) {
       await this.syncEdinetDocumentListOfDate(targetDate.clone(), refresh)
@@ -134,8 +134,8 @@ export class SyncUseCase implements ISyncUseCase {
     refresh?: boolean
   ) {
     const _startDate =
-      startDate || YearMonthDate.today('Asia/Tokyo').subtract(5, 'years')
-    const _endDate = endDate || YearMonthDate.today('Asia/Tokyo')
+      startDate || YearMonthDate.today(TOKYO_TIMEZONE).subtract(5, 'years')
+    const _endDate = endDate || YearMonthDate.today(TOKYO_TIMEZONE)
     let targetDate = _startDate.clone()
     while (targetDate.isSameOrBefore(_endDate)) {
       await this.syncEdinetDocumentsOfDate(targetDate.clone(), refresh)

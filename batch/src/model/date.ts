@@ -1,6 +1,10 @@
 import moment, { DurationInputArg1, DurationInputArg2, Moment } from 'moment'
 import 'moment-timezone'
 
+export const TOKYO_TIMEZONE = 'Asia/Tokyo'
+
+export const DEFAULT_TIMEZONE = TOKYO_TIMEZONE
+
 export function parseYearMonthDate(str?: string): YearMonthDate | undefined {
   return str ? YearMonthDate.parse(str) : undefined
 }
@@ -20,16 +24,18 @@ export class YearMonthDate {
     return [this.year, this.month, this.date].join(delimiter)
   }
 
-  moment(timezone: string): Moment {
-    return moment.tz(this.encode('-'), timezone)
+  moment(timezone?: string): Moment {
+    return moment.tz(this.encode('-'), timezone || DEFAULT_TIMEZONE)
   }
 
   subtract(n: DurationInputArg1, unit: DurationInputArg2) {
-    return YearMonthDate.fromMoment(this.moment('Asia/Tokyo').subtract(n, unit))
+    return YearMonthDate.fromMoment(
+      this.moment(DEFAULT_TIMEZONE).subtract(n, unit)
+    )
   }
 
   add(n: DurationInputArg1, unit: DurationInputArg2) {
-    return YearMonthDate.fromMoment(this.moment('Asia/Tokyo').add(n, unit))
+    return YearMonthDate.fromMoment(this.moment(DEFAULT_TIMEZONE).add(n, unit))
   }
 
   clone(): YearMonthDate {
@@ -37,14 +43,15 @@ export class YearMonthDate {
   }
 
   isSameOrBefore(other: YearMonthDate): boolean {
-    return this.moment('Asia/Tokyo').isSameOrBefore(
-      other.moment('Asia/Tokyo'),
-      'day'
-    )
+    return this.moment().isSameOrBefore(other.moment(), 'day')
   }
 
-  static today(timezone: string): YearMonthDate {
-    return this.fromMoment(moment().tz(timezone).startOf('day'))
+  static today(timezone?: string): YearMonthDate {
+    return this.fromMoment(
+      moment()
+        .tz(timezone || DEFAULT_TIMEZONE)
+        .startOf('day')
+    )
   }
 
   static fromMoment(moment: Moment): YearMonthDate {
@@ -52,6 +59,6 @@ export class YearMonthDate {
   }
 
   static parse(str: string): YearMonthDate | undefined {
-    return this.fromMoment(moment.tz(str, 'Azia/Tokyo'))
+    return this.fromMoment(moment.tz(str, DEFAULT_TIMEZONE))
   }
 }
