@@ -3,7 +3,12 @@ dotenv.config()
 
 import AWS from 'aws-sdk'
 import { injectable } from 'tsyringe'
-import { documentKey, documentListKey, IS3Client } from './interface'
+import {
+  documentKey,
+  documentListKey,
+  IS3Client,
+  S3ClientError,
+} from './interface'
 import { EdinetDocumentListResponse } from '../../model/document-list'
 import { EdinetDocumentsResponse } from '../../model/documents'
 import { YearMonthDate } from '../../model/date'
@@ -60,14 +65,26 @@ export class S3Client implements IS3Client {
   async downloadEdinetDocumentListResponse(
     date: YearMonthDate
   ): Promise<EdinetDocumentListResponse> {
-    const response = await getObject(documentListKey(date))
+    let response
+    try {
+      response = await getObject(documentListKey(date))
+    } catch (e: any) {
+      if (e.code == 'NoSuchKey') {
+        throw new S3ClientError(
+          'NotFound',
+          `S3 Object ${documentListKey(date)} not found.`
+        )
+      }
+      throw e
+    }
     if (typeof response.Body == 'object' && response.Body instanceof Buffer) {
       return JSON.parse(response.Body.toString()) as EdinetDocumentListResponse
     }
     if (typeof response.Body == 'string') {
       return JSON.parse(response.Body) as EdinetDocumentListResponse
     }
-    throw new Error(
+    throw new S3ClientError(
+      'UnexpectedFileType',
       `S3 Object ${documentListKey(date)} is not a Buffer nor a string.`
     )
   }

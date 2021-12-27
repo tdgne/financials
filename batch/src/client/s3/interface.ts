@@ -33,3 +33,14 @@ export interface IS3Client {
     response: EdinetDocumentsResponse
   ): Promise<void>
 }
+
+export type S3ClientErrorReason = 'NotFound' | 'UnexpectedFileType'
+
+export class S3ClientError extends Error {
+  readonly reason: S3ClientErrorReason
+
+  constructor(reason: S3ClientErrorReason, message?: string) {
+    super(message)
+    this.reason = reason
+  }
+}

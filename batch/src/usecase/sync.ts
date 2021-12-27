@@ -3,7 +3,7 @@ dotenv.config()
 
 import { inject, injectable } from 'tsyringe'
 import { IEdinetClient } from '../client/edinet/interface'
-import { IS3Client } from '../client/s3/interface'
+import { IS3Client, S3ClientError } from '../client/s3/interface'
 import { TOKYO_TIMEZONE, YearMonthDate } from '../model/date'
 import { EdinetDocumentListResponse } from '../model/document-list'
 import { ISleep } from './sleep'
@@ -109,14 +109,27 @@ export class SyncUseCase implements ISyncUseCase {
     refresh?: boolean
   ) {
     const targetDateString = targetDate.encode('-')
-    const list = await this.s3Client.downloadEdinetDocumentListResponse(
-      targetDate
-    )
+    let list
+    try {
+      list = await this.s3Client.downloadEdinetDocumentListResponse(targetDate)
+    } catch (e: any) {
+      if (typeof e == 'object' && e instanceof S3ClientError) {
+        if (e.reason == 'NotFound') {
+          console.warn(
+            `Document list of ${targetDateString} not found, please sync it first.`
+          )
+        } else {
+          throw e
+        }
+      } else {
+        throw e
+      }
+    }
 
     // ひとまず 有価証券報告書、訂正有価証券報告書、四半期報告書、訂正四半期報告書 に絞る
     // see https://qiita.com/XBRLJapan/items/27e623b8ca871740f352
     const docIDs =
-      list.results?.filter((result) => {
+      list?.results?.filter((result) => {
         if (result.ordinanceCode != '010') {
           return false
         }
