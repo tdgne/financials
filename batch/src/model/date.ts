@@ -10,9 +10,9 @@ export function parseYearMonthDate(str?: string): YearMonthDate | undefined {
 }
 
 export class YearMonthDate {
-  readonly year: number
-  readonly month: number // 1-based numbering (1, 2, .., 12)
-  readonly date: number
+  public readonly year: number
+  public readonly month: number // 1-based numbering (1, 2, .., 12)
+  public readonly date: number
 
   constructor(year: number, month: number, date: number) {
     this.year = year
@@ -58,7 +58,7 @@ export class YearMonthDate {
     return new YearMonthDate(moment.year(), moment.month() + 1, moment.date())
   }
 
-  static parse(str: string): YearMonthDate | undefined {
+  static parse(str: string): YearMonthDate {
     return this.fromMoment(moment.tz(str, DEFAULT_TIMEZONE))
   }
 }

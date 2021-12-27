@@ -70,9 +70,9 @@ export class SyncUseCase implements ISyncUseCase {
     refresh?: boolean
   ) {
     const _startDate = (
-      startDate || YearMonthDate.today(TOKYO_TIMEZONE)
+      startDate ?? YearMonthDate.today(TOKYO_TIMEZONE)
     ).subtract(5, 'years')
-    const _endDate = endDate || YearMonthDate.today(TOKYO_TIMEZONE)
+    const _endDate = endDate ?? YearMonthDate.today(TOKYO_TIMEZONE)
     let targetDate = _startDate
     while (targetDate.isSameOrBefore(_endDate)) {
       await this.syncEdinetDocumentListOfDate(targetDate.clone(), refresh)
@@ -134,8 +134,8 @@ export class SyncUseCase implements ISyncUseCase {
     refresh?: boolean
   ) {
     const _startDate =
-      startDate || YearMonthDate.today(TOKYO_TIMEZONE).subtract(5, 'years')
-    const _endDate = endDate || YearMonthDate.today(TOKYO_TIMEZONE)
+      startDate ?? YearMonthDate.today(TOKYO_TIMEZONE).subtract(5, 'years')
+    const _endDate = endDate ?? YearMonthDate.today(TOKYO_TIMEZONE)
     let targetDate = _startDate.clone()
     while (targetDate.isSameOrBefore(_endDate)) {
       await this.syncEdinetDocumentsOfDate(targetDate.clone(), refresh)

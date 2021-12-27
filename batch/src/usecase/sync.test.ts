@@ -79,9 +79,9 @@ describe('syncEdinetDocumentLists', () => {
   it('puts object with correct keys', async () => {
     const syncService = container.resolve(SyncUseCase)
     const fromString = '2021-12-23'
-    const from = parseDateForTest(fromString)
+    const from: YearMonthDate = parseDateForTest(fromString)
     const toString = '2021-12-25'
-    const to = parseDateForTest(toString)
+    const to: YearMonthDate = parseDateForTest(toString)
     const refresh = false
     await syncService.syncEdinetDocumentListsOfDateRange(from, to, refresh)
     const s3Client = syncService.s3Client as MockS3Client
