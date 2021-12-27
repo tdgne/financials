@@ -5,10 +5,11 @@ import * as dotenv from 'dotenv'
 dotenv.config()
 
 import { parse } from 'ts-command-line-args'
-import { SyncService } from './usecase/sync'
+import { SyncUseCase } from './usecase/sync'
 import { EdinetClient } from './client/edinet/impl'
 import { S3Client } from './client/s3/impl'
-import { parseDate, Sleep } from './utils'
+import { Sleep } from './usecase/sleep'
+import { YearMonthDate } from './model/date'
 
 interface ICommandLineArgs {
   from?: string
@@ -22,8 +23,8 @@ const args = parse<ICommandLineArgs>({
   refresh: { type: Boolean, alias: 'r' },
 })
 
-const startDate = parseDate(args.from)
-const endDate = parseDate(args.to)
+const startDate = args.from ? YearMonthDate.parse(args.from) : undefined
+const endDate = args.to ? YearMonthDate.parse(args.to) : undefined
 const refresh = args.refresh
 
 container.register('EdinetClient', {
@@ -38,6 +39,6 @@ container.register('Sleep', {
   useClass: Sleep,
 })
 
-const syncService = container.resolve(SyncService)
+const syncService = container.resolve(SyncUseCase)
 
 syncService.syncEdinetDocumentsOfDateRange(startDate, endDate, refresh)

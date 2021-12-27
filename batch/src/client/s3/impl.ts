@@ -2,11 +2,11 @@ import * as dotenv from 'dotenv'
 dotenv.config()
 
 import AWS from 'aws-sdk'
-import { Moment } from 'moment'
 import { injectable } from 'tsyringe'
 import { documentKey, documentListKey, IS3Client } from './interface'
 import { EdinetDocumentListResponse } from '../../model/document-list'
 import { EdinetDocumentsResponse } from '../../model/documents'
+import { YearMonthDate } from '../../model/date'
 const s3 = new AWS.S3()
 
 const BUCKET_NAME = process.env.BUCKET_NAME as string | undefined
@@ -49,7 +49,7 @@ export class S3Client implements IS3Client {
     console.log('Constructed real S3Client')
   }
 
-  doesEdinetDocumentListResponseExist(date: Moment) {
+  doesEdinetDocumentListResponseExist(date: YearMonthDate) {
     return doesObjectExist(documentListKey(date))
   }
 
@@ -58,7 +58,7 @@ export class S3Client implements IS3Client {
   }
 
   async downloadEdinetDocumentListResponse(
-    date: Moment
+    date: YearMonthDate
   ): Promise<EdinetDocumentListResponse> {
     const response = await getObject(documentListKey(date))
     if (typeof response.Body == 'object' && response.Body instanceof Buffer) {
@@ -73,7 +73,7 @@ export class S3Client implements IS3Client {
   }
 
   async uploadEdinetDocumentListResponse(
-    date: Moment,
+    date: YearMonthDate,
     json: EdinetDocumentListResponse
   ) {
     await upload(documentListKey(date), JSON.stringify(json))

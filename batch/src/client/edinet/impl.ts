@@ -1,6 +1,6 @@
 import axios from 'axios'
-import { Moment } from 'moment'
 import { injectable } from 'tsyringe'
+import { YearMonthDate } from '../../model/date'
 import { EdinetDocumentsResponse } from '../../model/documents'
 import { IEdinetClient } from './interface'
 
@@ -15,11 +15,11 @@ export class EdinetClient implements IEdinetClient {
     console.log('Constructed real EdinetClient')
   }
 
-  async fetchDocumentList(date: Moment) {
+  async fetchDocumentList(date: YearMonthDate) {
     return (
       await axios.get(DOCUMENT_LIST_ENDPOINT, {
         params: {
-          date: date.format('YYYY-MM-DD'),
+          date: date.encode('-'),
           type: 2,
         },
       })

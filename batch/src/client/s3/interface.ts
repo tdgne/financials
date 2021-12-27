@@ -1,7 +1,7 @@
 import * as dotenv from 'dotenv'
+import { YearMonthDate } from '../../model/date'
 dotenv.config()
 
-import { Moment } from 'moment'
 import { EdinetDocumentListResponse } from '../../model/document-list'
 import { EdinetDocumentsResponse } from '../../model/documents'
 
@@ -10,14 +10,8 @@ const EDINET_RAW_DOCUMENT_LIST_PREFIX =
 const EDINET_RAW_DOCUMENT_PREFIX =
   process.env.EDINET_RAW_DOCUMENT_PREFIX || 'edinet/raw/document/'
 
-export function documentListKey(date: Moment) {
-  if (date.hours() == 0 && date.minutes() == 0 && date.seconds() == 0) {
-    return `${EDINET_RAW_DOCUMENT_LIST_PREFIX}${date.format(
-      'YYYY/MM/DD'
-    )}/documents.json`
-  } else {
-    throw new Error('Only start of a day is allowed')
-  }
+export function documentListKey(date: YearMonthDate) {
+  return `${EDINET_RAW_DOCUMENT_LIST_PREFIX}${date.encode('/')}/documents.json`
 }
 
 export function documentKey(docID: string) {
@@ -25,13 +19,13 @@ export function documentKey(docID: string) {
 }
 
 export interface IS3Client {
-  doesEdinetDocumentListResponseExist(date: Moment): Promise<boolean>
+  doesEdinetDocumentListResponseExist(date: YearMonthDate): Promise<boolean>
   doesEdinetDocumentsResponseExist(docID: string): Promise<boolean>
   downloadEdinetDocumentListResponse(
-    date: Moment
+    date: YearMonthDate
   ): Promise<EdinetDocumentListResponse>
   uploadEdinetDocumentListResponse(
-    date: Moment,
+    date: YearMonthDate,
     response: EdinetDocumentListResponse
   ): Promise<void>
   uploadEdinetDocumentsResponse(

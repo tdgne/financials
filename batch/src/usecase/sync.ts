@@ -1,56 +1,61 @@
 import * as dotenv from 'dotenv'
 dotenv.config()
 
-import { Moment } from 'moment'
 import { inject, injectable } from 'tsyringe'
 import { IEdinetClient } from '../client/edinet/interface'
 import { IS3Client } from '../client/s3/interface'
+import { YearMonthDate } from '../model/date'
 import { EdinetDocumentListResponse } from '../model/document-list'
-import { ISleep, today } from '../utils'
+import { ISleep } from './sleep'
 
-export interface ISyncService {
-  syncEdinetDocumentListOfDate(targetDate: Moment, refresh?: boolean): void
+export interface ISyncUseCase {
+  syncEdinetDocumentListOfDate(
+    targetDate: YearMonthDate,
+    refresh?: boolean
+  ): void
   syncEdinetDocumentListsOfDateRange(
-    startDate?: Moment,
-    endDate?: Moment,
+    startDate?: YearMonthDate,
+    endDate?: YearMonthDate,
     refresh?: boolean
   ): void
   syncEdinetDocument(docID: string, refresh?: boolean): void
-  syncEdinetDocumentsOfDate(targetDate: Moment, refresh?: boolean): void
+  syncEdinetDocumentsOfDate(targetDate: YearMonthDate, refresh?: boolean): void
   syncEdinetDocumentsOfDateRange(
-    startDate: Moment,
-    endDate: Moment,
+    startDate: YearMonthDate,
+    endDate: YearMonthDate,
     refresh?: boolean
   ): void
 }
 
 @injectable()
-export class SyncService implements ISyncService {
+export class SyncUseCase implements ISyncUseCase {
   constructor(
     @inject('EdinetClient') public edinetClient: IEdinetClient,
     @inject('S3Client') public s3Client: IS3Client,
     @inject('Sleep') public sleep: ISleep
   ) {}
 
-  async syncEdinetDocumentListOfDate(targetDate: Moment, refresh?: boolean) {
-    const _targetDate = targetDate.clone().startOf('day')
-    const targetDateString = _targetDate.format('YYYY-MM-DD')
+  async syncEdinetDocumentListOfDate(
+    targetDate: YearMonthDate,
+    refresh?: boolean
+  ) {
+    const targetDateString = targetDate.encode('-')
     if (
       !refresh &&
-      (await this.s3Client.doesEdinetDocumentListResponseExist(_targetDate))
+      (await this.s3Client.doesEdinetDocumentListResponseExist(targetDate))
     ) {
       console.log(`Document list of ${targetDateString} exists.`)
       return
     }
     const documentList: EdinetDocumentListResponse =
-      await this.edinetClient.fetchDocumentList(_targetDate)
+      await this.edinetClient.fetchDocumentList(targetDate)
     const { status, message } = documentList.metadata
     console.log(
       `Fetched document list of ${targetDateString} (${status}, ${message}).`
     )
     if (status == 200) {
       await this.s3Client.uploadEdinetDocumentListResponse(
-        _targetDate,
+        targetDate,
         documentList
       )
       console.log(`Uploaded document list of ${targetDateString} to S3.`)
@@ -60,16 +65,16 @@ export class SyncService implements ISyncService {
   }
 
   async syncEdinetDocumentListsOfDateRange(
-    startDate?: Moment,
-    endDate?: Moment,
+    startDate?: YearMonthDate,
+    endDate?: YearMonthDate,
     refresh?: boolean
   ) {
     const _startDate = (
-      startDate?.clone() || today('Asia/Tokyo').subtract(5, 'years')
-    ).startOf('day')
-    const _endDate = (endDate?.clone() || today('Asia/Tokyo')).startOf('day')
-    let targetDate = _startDate.clone()
-    while (targetDate.isSameOrBefore(_endDate, 'day')) {
+      startDate || YearMonthDate.today('Asia/Tokyo')
+    ).subtract(5, 'years')
+    const _endDate = endDate || YearMonthDate.today('Asia/Tokyo')
+    let targetDate = _startDate
+    while (targetDate.isSameOrBefore(_endDate)) {
       await this.syncEdinetDocumentListOfDate(targetDate.clone(), refresh)
       await this.sleep.sleep()
       targetDate = targetDate.add(1, 'day')
@@ -95,11 +100,13 @@ export class SyncService implements ISyncService {
     }
   }
 
-  async syncEdinetDocumentsOfDate(targetDate: Moment, refresh?: boolean) {
-    const _targetDate = targetDate.clone().startOf('day')
-    const targetDateString = _targetDate.format('YYYY-MM-DD')
+  async syncEdinetDocumentsOfDate(
+    targetDate: YearMonthDate,
+    refresh?: boolean
+  ) {
+    const targetDateString = targetDate.encode('-')
     const list = await this.s3Client.downloadEdinetDocumentListResponse(
-      _targetDate
+      targetDate
     )
 
     // ひとまず 有価証券報告書、訂正有価証券報告書、四半期報告書、訂正四半期報告書 に絞る
@@ -122,16 +129,15 @@ export class SyncService implements ISyncService {
   }
 
   async syncEdinetDocumentsOfDateRange(
-    startDate?: Moment,
-    endDate?: Moment,
+    startDate?: YearMonthDate,
+    endDate?: YearMonthDate,
     refresh?: boolean
   ) {
-    const _startDate = (
-      startDate?.clone() || today('Asia/Tokyo').subtract(5, 'years')
-    ).startOf('day')
-    const _endDate = (endDate?.clone() || today('Asia/Tokyo')).startOf('day')
+    const _startDate =
+      startDate || YearMonthDate.today('Asia/Tokyo').subtract(5, 'years')
+    const _endDate = endDate || YearMonthDate.today('Asia/Tokyo')
     let targetDate = _startDate.clone()
-    while (targetDate.isSameOrBefore(_endDate, 'day')) {
+    while (targetDate.isSameOrBefore(_endDate)) {
       await this.syncEdinetDocumentsOfDate(targetDate.clone(), refresh)
       targetDate = targetDate.add(1, 'day')
     }

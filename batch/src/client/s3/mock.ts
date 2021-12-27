@@ -1,8 +1,8 @@
 import * as dotenv from 'dotenv'
 dotenv.config()
 
-import { Moment } from 'moment'
 import { injectable } from 'tsyringe'
+import { YearMonthDate } from '../../model/date'
 import { EdinetDocumentListResponse } from '../../model/document-list'
 import { EdinetDocumentsResponse } from '../../model/documents'
 import { documentKey, documentListKey, IS3Client } from './interface'
@@ -15,7 +15,7 @@ export class MockS3Client implements IS3Client {
     console.log('Constructed mock S3Client')
   }
 
-  async doesEdinetDocumentListResponseExist(date: Moment) {
+  async doesEdinetDocumentListResponseExist(date: YearMonthDate) {
     return documentListKey(date) in this.storage
   }
 
@@ -24,14 +24,14 @@ export class MockS3Client implements IS3Client {
   }
 
   async downloadEdinetDocumentListResponse(
-    date: Moment
+    date: YearMonthDate
   ): Promise<EdinetDocumentListResponse> {
     return {
       metadata: {
         status: 200,
         message: 'OK',
         parameter: {
-          date: date.format('YYYY-MM-DD'),
+          date: date.encode('-'),
           type: '2',
         },
       },
@@ -49,7 +49,7 @@ export class MockS3Client implements IS3Client {
     } as EdinetDocumentListResponse
   }
 
-  async uploadEdinetDocumentListResponse(date: Moment, json: object) {
+  async uploadEdinetDocumentListResponse(date: YearMonthDate, json: object) {
     this.storage[documentListKey(date)] = JSON.stringify(json)
   }
 

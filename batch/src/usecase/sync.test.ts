@@ -1,11 +1,11 @@
 import 'reflect-metadata'
 import { container } from 'tsyringe'
-import { SyncService } from './sync'
+import { SyncUseCase } from './sync'
 import { MockEdinetClient } from '../client/edinet/mock'
 import { MockS3Client } from '../client/s3/mock'
-import { MockSleep, parseDate } from '../utils'
+import { MockSleep } from './sleep'
 import 'jest'
-import { Moment } from 'moment'
+import { YearMonthDate } from '../model/date'
 
 container.register('EdinetClient', {
   useClass: MockEdinetClient,
@@ -19,8 +19,8 @@ container.register('Sleep', {
   useClass: MockSleep,
 })
 
-function parseDateForTest(dateString?: string): Moment {
-  return parseDate(dateString) ?? fail('parseDate returned undefined')
+function parseDateForTest(dateString: string): YearMonthDate {
+  return YearMonthDate.parse(dateString) ?? fail('parseDate returned undefined')
 }
 
 describe('syncEdinetDocumentListOfDate', () => {
@@ -29,7 +29,7 @@ describe('syncEdinetDocumentListOfDate', () => {
   })
 
   it('puts object with correct key', async () => {
-    const syncService = container.resolve(SyncService)
+    const syncService = container.resolve(SyncUseCase)
     const dateString = '2021-12-25'
     const date = parseDateForTest(dateString)
     const refresh = false
@@ -42,7 +42,7 @@ describe('syncEdinetDocumentListOfDate', () => {
   })
 
   it("doesn't put object when not found", async () => {
-    const syncService = container.resolve(SyncService)
+    const syncService = container.resolve(SyncUseCase)
     const dateString = '2021-12-26'
     const date = parseDateForTest(dateString)
     const refresh = false
@@ -52,7 +52,7 @@ describe('syncEdinetDocumentListOfDate', () => {
   })
 
   it('overwrites existing object when refresh mode is true', async () => {
-    const syncService = container.resolve(SyncService)
+    const syncService = container.resolve(SyncUseCase)
     const dateString = '2021-12-25'
     const date = parseDateForTest(dateString)
     const refresh = true
@@ -77,7 +77,7 @@ describe('syncEdinetDocumentLists', () => {
   })
 
   it('puts object with correct keys', async () => {
-    const syncService = container.resolve(SyncService)
+    const syncService = container.resolve(SyncUseCase)
     const fromString = '2021-12-23'
     const from = parseDateForTest(fromString)
     const toString = '2021-12-25'
@@ -98,7 +98,7 @@ describe('syncEdinetDocumentLists', () => {
   })
 
   it("doesn't put object when not found", async () => {
-    const syncService = container.resolve(SyncService)
+    const syncService = container.resolve(SyncUseCase)
     const fromString = '2021-12-23'
     const from = parseDateForTest(fromString)
     const toString = '2021-12-27'
@@ -125,7 +125,7 @@ describe('syncEdinetDocumentsOfDate', () => {
   })
 
   it('works', () => {
-    const syncService = container.resolve(SyncService)
+    const syncService = container.resolve(SyncUseCase)
     syncService.syncEdinetDocumentsOfDate(parseDateForTest('2021-12-25'), false)
   })
 })
