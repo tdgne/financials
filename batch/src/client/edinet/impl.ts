@@ -33,8 +33,6 @@ export class EdinetClient implements IEdinetClient {
       },
       responseType: 'arraybuffer',
     })
-    return {
-      file: response.data,
-    }
+    return response.data
   }
 }

@@ -27,8 +27,6 @@ export class MockEdinetClient implements IEdinetClient {
   }
 
   async fetchDocuments(_docID: string): Promise<EdinetDocumentsResponse> {
-    return {
-      file: new ArrayBuffer(100),
-    }
+    return new ArrayBuffer(100)
   }
 }

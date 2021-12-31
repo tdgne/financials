@@ -100,6 +100,6 @@ export class S3Client implements IS3Client {
     docID: string,
     response: EdinetDocumentsResponse
   ): Promise<void> {
-    await upload(documentKey(docID), response.file)
+    await upload(documentKey(docID), response)
   }
 }

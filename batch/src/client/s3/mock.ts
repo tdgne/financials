@@ -57,6 +57,6 @@ export class MockS3Client implements IS3Client {
     docID: string,
     response: EdinetDocumentsResponse
   ): Promise<void> {
-    this.storage[documentKey(docID)] = response.file
+    this.storage[documentKey(docID)] = response
   }
 }

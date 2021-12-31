@@ -1,3 +1,1 @@
-export interface EdinetDocumentsResponse {
-  file: ArrayBuffer
-}
+export type EdinetDocumentsResponse = ArrayBuffer
