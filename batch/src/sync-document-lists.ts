@@ -14,18 +14,18 @@ import { YearMonthDate } from './model/date'
 interface ICommandLineArgs {
   from?: string
   to?: string
-  refresh: boolean
+  'no-overwrite': boolean
 }
 
 const args = parse<ICommandLineArgs>({
   from: { type: String, optional: true },
   to: { type: String, optional: true },
-  refresh: { type: Boolean, alias: 'r' },
+  'no-overwrite': { type: Boolean },
 })
 
 const startDate = args.from ? YearMonthDate.parse(args.from) : undefined
 const endDate = args.to ? YearMonthDate.parse(args.to) : undefined
-const refresh = args.refresh
+const refresh = !args['no-overwrite']
 
 container.register('EdinetClient', {
   useClass: EdinetClient,

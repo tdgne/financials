@@ -25,20 +25,20 @@ This can take a very long time.
 
 
 ```bash
-make sync-document-lists
-make sync-documents
+./sync.sh document-lists
+./sync.sh documents
 ```
 
 ### Partial sync
 
 ```bash
 # from 2021-12-24 to today
-make sync-document-lists FROM=2021-12-24
-make sync-documents FROM=2021-12-24
+./sync.sh document-lists --from=2021-12-24
+./sync.sh documents --from=2021-12-24
 
 # from 2021-12-24 to 2021-12-26
-make sync-document-lists FROM=2021-12-24 TO=2021-12-26
-make sync-documents FROM=2021-12-24 TO=2021-12-26
+./sync.sh document-lists --from=2021-12-24 --to=2021-12-26
+./sync.sh documents --from=2021-12-24 --to=2021-12-26
 ```
 
 # Troubleshooting

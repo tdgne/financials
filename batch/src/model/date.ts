@@ -9,6 +9,10 @@ export function parseYearMonthDate(str?: string): YearMonthDate | undefined {
   return str ? YearMonthDate.parse(str) : undefined
 }
 
+function zeropad2(n: number): string {
+  return ('0' + n).slice(-2)
+}
+
 export class YearMonthDate {
   public readonly year: number
   public readonly month: number // 1-based numbering (1, 2, .., 12)
@@ -21,7 +25,9 @@ export class YearMonthDate {
   }
 
   encode(delimiter: string) {
-    return [this.year, this.month, this.date].join(delimiter)
+    return [this.year, zeropad2(this.month), zeropad2(this.date)].join(
+      delimiter
+    )
   }
 
   moment(timezone?: string): Moment {
