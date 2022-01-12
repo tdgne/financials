@@ -3,7 +3,7 @@
 # Requirements
 
  - Docker
- - docker-compose
+ - docker-compose (>1.28)
  - AWS CLI
 
 # Usage

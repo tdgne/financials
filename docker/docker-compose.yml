@@ -8,6 +8,20 @@ services:
     volumes:
       - ../batch:/usr/src/batch
       - dummy:/usr/src/batch/node_modules
+    profiles:
+      - batch
+
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: example
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
 
 volumes:
   dummy:
